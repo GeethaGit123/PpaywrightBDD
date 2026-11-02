@@ -22,6 +22,6 @@ allure-report/
 # Operating system files
 /.DS_Store
 /Thumbs.db
-playwright-bdd-framework/config/.env.*
-playwright-bdd-framework/config/.env.qa
-playwright-bdd-framework/config/.env.uat
+/config/.env.*
+/config/.env.
+/config/.env.uat
