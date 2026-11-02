@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# Playwright test results
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Allure reports
+allure-results/
+allure-report/
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db

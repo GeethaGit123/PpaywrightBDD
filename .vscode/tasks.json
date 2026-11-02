@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Cucumber smoke scenario",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/d",
+				"/s",
+				"/c",
+				"npm run test:bdd --prefix playwright-bdd-framework -- --tags \"@smoke\""
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
