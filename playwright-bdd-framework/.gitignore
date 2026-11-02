@@ -1,25 +1,25 @@
 # Dependencies
-node_modules/
+/node_modules/
 
 # Environment variables
-.env
-.env.*
-
+/.env
+/.env.
 # Playwright test results
-test-results/
-playwright-report/
-playwright/.cache/
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
 # Allure reports
-allure-results/
+/allure-results/
 allure-report/
 
 # Logs
-*.log
+/*.log
 
 # VS Code
-.vscode/
+/.vscode/
 
 # Operating system files
-.DS_Store
-Thumbs.db
+/.DS_Store
+/Thumbs.db
+playwright-bdd-framework/config/.env.*
