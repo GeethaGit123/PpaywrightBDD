@@ -35,8 +35,42 @@ jobs:
         working-directory: playwright-bdd-framework
         run: npm run typecheck
 
+      - name: Create QA environment file
+        working-directory: playwright-bdd-framework
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const values = {
+            BASE_URL: process.env.BASE_URL,
+            USERNAME: process.env.USERNAME,
+            PASSWORD: process.env.PASSWORD,
+          };
+          const secretNames = {
+            BASE_URL: "BASE_URL",
+            USERNAME: "USERNAME",
+            PASSWORD: "PASSWORD",
+          };
+          const missing = Object.entries(values)
+            .filter(([, value]) => !value)
+            .map(([name]) => secretNames[name]);
+          if (missing.length) {
+            throw new Error(`Missing GitHub Actions secrets: ${missing.join(", ")}`);
+          }
+          const contents = Object.entries(values)
+            .map(([name, value]) => `${name}=${JSON.stringify(value)}`)
+            .join("\n");
+          fs.writeFileSync("config/.env.qa", `${contents}\n`, { mode: 0o600 });
+          NODE
+
       - name: Run BDD tests
-        run: npm run test:bdd --prefix playwright-bdd-framework
+        working-directory: playwright-bdd-framework
+        env:
+          TEST_ENV: qa
+        run: npm run test:bdd
 
       - name: Upload test reports
         if: always()

@@ -40,8 +40,41 @@ jobs:
         working-directory: playwright-bdd-framework
         run: npm run typecheck
 
+      - name: Create QA environment file
+        working-directory: playwright-bdd-framework
+        env:
+          QA_BASE_URL: ${{ secrets.QA_BASE_URL }}
+          QA_USERNAME: ${{ secrets.QA_USERNAME }}
+          QA_PASSWORD: ${{ secrets.QA_PASSWORD }}
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const values = {
+            BASE_URL: process.env.QA_BASE_URL,
+            USERNAME: process.env.QA_USERNAME,
+            PASSWORD: process.env.QA_PASSWORD,
+          };
+          const secretNames = {
+            BASE_URL: "QA_BASE_URL",
+            USERNAME: "QA_USERNAME",
+            PASSWORD: "QA_PASSWORD",
+          };
+          const missing = Object.entries(values)
+            .filter(([, value]) => !value)
+            .map(([name]) => secretNames[name]);
+          if (missing.length) {
+            throw new Error(`Missing GitHub Actions secrets: ${missing.join(", ")}`);
+          }
+          const contents = Object.entries(values)
+            .map(([name, value]) => `${name}=${JSON.stringify(value)}`)
+            .join("\n");
+          fs.writeFileSync("config/.env.qa", `${contents}\n`, { mode: 0o600 });
+          NODE
+
       # Step 6: Execute Cucumber BDD tests
       - name: Run BDD tests
+        env:
+          TEST_ENV: qa
         working-directory: playwright-bdd-framework
         run: npm run test:bdd
 
