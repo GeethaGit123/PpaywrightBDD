@@ -23,21 +23,26 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: playwright-bdd-framework/package-lock.json
 
       # Step 3: Install dependencies
       - name: Install dependencies
+        working-directory: playwright-bdd-framework
         run: npm ci
 
       # Step 4: Install Playwright browsers
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        working-directory: playwright-bdd-framework
+        run: npx playwright install --with-deps chromium
 
       # Step 5: TypeScript validation
       - name: TypeScript typecheck
+        working-directory: playwright-bdd-framework
         run: npm run typecheck
 
       # Step 6: Execute Cucumber BDD tests
       - name: Run BDD tests
+        working-directory: playwright-bdd-framework
         run: npm run test:bdd
 
       # Step 7: Upload test reports
@@ -47,8 +52,7 @@ jobs:
         with:
           name: playwright-bdd-reports
           path: |
-            test-results/
-            reports/
+            playwright-bdd-framework/reports/
+            playwright-bdd-framework/screenshots/
           if-no-files-found: ignore
           retention-days: 30
-
