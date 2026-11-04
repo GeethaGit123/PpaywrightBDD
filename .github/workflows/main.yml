@@ -1,0 +1,50 @@
+name: Playwright BDD Main
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: playwright-bdd-framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: playwright-bdd-framework
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: playwright-bdd-framework
+        run: npx playwright install --with-deps chromium
+
+      - name: TypeScript typecheck
+        working-directory: playwright-bdd-framework
+        run: npm run typecheck
+
+      - name: Run BDD tests
+        run: npm run test:bdd --prefix playwright-bdd-framework
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-bdd-reports
+          path: |
+            playwright-bdd-framework/reports/
+            playwright-bdd-framework/screenshots/
+          if-no-files-found: ignore
+          retention-days: 30

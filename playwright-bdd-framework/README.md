@@ -87,6 +87,16 @@ npm run test:bdd
 
 ## E. Execute all BDD tests
 
+This project uses Cucumber as its runner; `npx bdd-gen` is not a command provided
+by this project. The Playwright-BDD `bddgen` CLI is a separate generator and is
+not configured here. From the repository root, run:
+
+```sh
+npm run test:bdd --prefix playwright-bdd-framework
+```
+
+Or run the same script from `playwright-bdd-framework`:
+
 ```sh
 npm run test:bdd
 ```
