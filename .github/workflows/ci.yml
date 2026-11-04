@@ -11,6 +11,7 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment: qa
 
     steps:
       # Step 1: Checkout repository
@@ -43,9 +44,9 @@ jobs:
       - name: Create QA environment file
         working-directory: playwright-bdd-framework
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
+          BASE_URL: ${{ secrets.BASE_URL || secrets.QA_BASE_URL }}
+          USERNAME: ${{ secrets.USERNAME || secrets.QA_USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD || secrets.QA_PASSWORD }}
         run: |
           node <<'NODE'
           const fs = require("node:fs");
@@ -55,9 +56,9 @@ jobs:
             PASSWORD: process.env.PASSWORD,
           };
           const secretNames = {
-            BASE_URL: "BASE_URL",
-            USERNAME: "USERNAME",
-            PASSWORD: "PASSWORD",
+            BASE_URL: "BASE_URL or QA_BASE_URL",
+            USERNAME: "USERNAME or QA_USERNAME",
+            PASSWORD: "PASSWORD or QA_PASSWORD",
           };
           const missing = Object.entries(values)
             .filter(([, value]) => !value)
