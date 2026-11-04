@@ -1,5 +1,5 @@
 
-name: Playwright CI
+name: Playwright BDD CI
 
 on:
   push:
@@ -13,20 +13,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
           cache: npm
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # Step 4: Install Playwright browsers
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test
+      # Step 5: TypeScript validation
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      # Step 6: Execute Cucumber BDD tests
+      - name: Run BDD tests
+        run: npm run test:bdd
+
+      # Step 7: Upload test reports
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-bdd-reports
+          path: |
+            test-results/
+            reports/
+          if-no-files-found: ignore
+          retention-days: 30
+
