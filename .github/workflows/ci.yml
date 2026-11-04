@@ -43,21 +43,21 @@ jobs:
       - name: Create QA environment file
         working-directory: playwright-bdd-framework
         env:
-          QA_BASE_URL: ${{ secrets.QA_BASE_URL }}
-          QA_USERNAME: ${{ secrets.QA_USERNAME }}
-          QA_PASSWORD: ${{ secrets.QA_PASSWORD }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           node <<'NODE'
           const fs = require("node:fs");
           const values = {
-            BASE_URL: process.env.QA_BASE_URL,
-            USERNAME: process.env.QA_USERNAME,
-            PASSWORD: process.env.QA_PASSWORD,
+            BASE_URL: process.env.BASE_URL,
+            USERNAME: process.env.USERNAME,
+            PASSWORD: process.env.PASSWORD,
           };
           const secretNames = {
-            BASE_URL: "QA_BASE_URL",
-            USERNAME: "QA_USERNAME",
-            PASSWORD: "QA_PASSWORD",
+            BASE_URL: "BASE_URL",
+            USERNAME: "USERNAME",
+            PASSWORD: "PASSWORD",
           };
           const missing = Object.entries(values)
             .filter(([, value]) => !value)
